@@ -1,6 +1,6 @@
 import type { RateCardRole, Simulation } from './types';
 import { DEFAULT_RATE_CARD } from './rateCard';
-import { exampleSimulation } from './defaults';
+import { sporaSimulation } from './defaults';
 
 const KEY_SIMS = 'kajian-finansial.sims.v1';
 const KEY_RATE = 'kajian-finansial.rates.v1';
@@ -32,7 +32,7 @@ export function loadSims(): Simulation[] {
       /* abaikan */
     }
   }
-  return [exampleSimulation()];
+  return [sporaSimulation()];
 }
 export function saveSims(sims: Simulation[]) {
   memSims = JSON.stringify(sims);

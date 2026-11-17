@@ -1,6 +1,7 @@
 import { MAX_YEARS } from './types';
 import type { CapexItem, Component, Driver, OpexItem, Scenario, Simulation } from './types';
 import { DEFAULT_RATE_CARD } from './rateCard';
+import sporaData from './spora.json';
 
 let counter = 0;
 export const uid = (p = 'id') => `${p}_${Date.now().toString(36)}${(counter++).toString(36)}${Math.random().toString(36).slice(2, 5)}`;
@@ -147,5 +148,15 @@ export function exampleSimulation(): Simulation {
     { id: uid('nt'), param: 'WACC / CoF', value: '8,93%', status: 'TEMPLATE', source: 'Sheet Asumsi template KKF.' },
     { id: uid('nt'), param: 'Faktor emisi dihindari', value: '0,59 kg/kWh', status: 'ANALIS', source: 'Ilustrasi; perlu validasi.' },
   ];
+  return s;
+}
+
+/** Contoh awal bagi pengguna baru: simulasi SPORA – SPKLU untuk Korporat. */
+export function sporaSimulation(): Simulation {
+  const s = structuredClone(sporaData) as unknown as Simulation;
+  s.id = uid('sim');
+  const now = new Date().toISOString();
+  s.createdAt = now;
+  s.updatedAt = now;
   return s;
 }

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { RateCardRole, Simulation } from './types';
-import { blankSimulation, exampleSimulation, uid } from './defaults';
+import { blankSimulation, sporaSimulation, uid } from './defaults';
 import { compute } from './engine';
 import { download, loadRateCard, loadSims, safeName, saveRateCard, saveSims } from './storage';
 import { exportXlsxBuffer } from './exportXlsx';
@@ -73,7 +73,7 @@ export default function App() {
     window.scrollTo(0, 0);
   };
   const create = (kind: 'blank' | 'example') => {
-    const s = kind === 'blank' ? blankSimulation() : exampleSimulation();
+    const s = kind === 'blank' ? blankSimulation() : sporaSimulation();
     setSims((a) => [s, ...a]);
     open(s.id);
   };
