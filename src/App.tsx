@@ -6,6 +6,7 @@ import { download, loadRateCard, loadSims, safeName, saveRateCard, saveSims } fr
 import { exportXlsxBuffer } from './exportXlsx';
 import { fmtPct, fmtUnit, UNIT_LABEL } from './format';
 import { Badge, Btn } from './ui';
+import Toast from '@/components/arc/toast/toast';
 import { Tabs, TabsList, TabsTrigger } from '@/components/arc/tabs/tabs';
 import General from './pages/General';
 import Transactions from './pages/Transactions';
@@ -147,7 +148,7 @@ export default function App() {
         )}
       </main>
       <input ref={fileRef} type="file" accept="application/json,.json" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) importJson(f); e.target.value = ''; }} />
-      {toast && <div className="toast">{toast}</div>}
+      {toast && <Toast title={toast} open onOpenChange={(o) => { if (!o) setToast(null); }} duration={3500} />}
     </div>
   );
 }

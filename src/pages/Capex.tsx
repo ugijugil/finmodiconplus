@@ -1,6 +1,6 @@
 import type { CapexItem, CapexKind, RateCardRole, Simulation } from '../types';
 import { newCapex, CAPEX_CATEGORIES } from '../defaults';
-import { Btn, Card, Empty, Field, NumField, Select, TextField, YearTable, CategoryField } from '../ui';
+import { Btn, Card, Empty, Field, NumField, Select, TextField, YearTable, CategoryField, Warn } from '../ui';
 import { capexAmount, compute } from '../engine';
 import { fmt, fmtUnit, UNIT_LABEL } from '../format';
 
@@ -32,7 +32,7 @@ export default function Capex({ sim, update, rateCard }: { sim: Simulation; upda
         ) : (
           <>
             {sim.capex.some((c) => c.year > N) && (
-              <div className="warnbox">Ada item capex dengan tahun belanja di luar tenor ({N} tahun); item tersebut tidak dihitung. Ubah tahun belanjanya atau perpanjang tenor.</div>
+              <Warn>Ada item capex dengan tahun belanja di luar tenor ({N} tahun); item tersebut tidak dihitung. Ubah tahun belanjanya atau perpanjang tenor.</Warn>
             )}
             <div className="kpi-line">
               Total capex (sebelum pengali): <b>Rp {fmt(total)}</b> · setelah pengali what-if: <b>Rp {fmt(res.metrics.totalCapex)}</b>

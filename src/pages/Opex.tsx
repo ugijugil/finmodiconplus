@@ -1,6 +1,6 @@
 import type { OpexItem, OpexKind, RateCardRole, Simulation } from '../types';
 import { newOpex, OPEX_CATEGORIES, standardOverhead } from '../defaults';
-import { Btn, Card, Empty, Field, NumField, PctField, Select, TextField, YearTable, CategoryField } from '../ui';
+import { Btn, Card, Empty, Field, NumField, PctField, Select, TextField, YearTable, CategoryField, Warn } from '../ui';
 import { compute, opexBaseAnnual } from '../engine';
 import { fmt, fmtUnit, UNIT_LABEL } from '../format';
 
@@ -37,7 +37,7 @@ export default function Opex({ sim, update, rateCard }: { sim: Simulation; updat
         }
       >
         {!sim.opex.some((o) => o.kind === 'pctRevenue') && sim.opex.length > 0 && (
-          <div className="warnbox">Belum ada beban overhead (kepegawaian, administrasi umum, pemasaran) maupun pemeliharaan. Klik “+ Overhead standar” bila perlu.</div>
+          <Warn>Belum ada beban overhead (kepegawaian, administrasi umum, pemasaran) maupun pemeliharaan. Klik “+ Overhead standar” bila perlu.</Warn>
         )}
         {sim.opex.length === 0 ? (
           <Empty>Belum ada item opex.</Empty>

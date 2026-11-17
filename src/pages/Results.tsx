@@ -1,6 +1,6 @@
 import { Bar, CartesianGrid, ComposedChart, Legend, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { Simulation } from '../types';
-import { Badge, Card, YearTable } from '../ui';
+import { Badge, Card, YearTable, Warn } from '../ui';
 import { compute, MATRIX_PRICE, MATRIX_VOLUME, priceVolumeMatrix, SENS_DELTAS, scenarioComparison, sensitivity } from '../engine';
 import { cashFlowLines } from '../xlsxCharts';
 import { fmt, fmtPct, fmtUnit, UNIT_DIV, UNIT_LABEL } from '../format';
@@ -58,12 +58,12 @@ export default function Results({ sim }: { sim: Simulation }) {
       </Card>
 
       {m.investment <= 0 && (
-        <div className="warnbox">
+        <Warn>
           Tidak ada kas keluar di tahun ke-0 (belum ada item capex di tahun ke-0), sehingga IRR, Profitability Index, dan ROI tidak dapat dihitung. Tambahkan item capex di tab Capex.
-        </div>
+        </Warn>
       )}
       {m.investment > 0 && m.irr === null && (
-        <div className="warnbox">IRR tidak dapat dihitung karena arus kas tidak pernah berganti tanda (tidak pernah positif atau tidak pernah negatif).</div>
+        <Warn>IRR tidak dapat dihitung karena arus kas tidak pernah berganti tanda (tidak pernah positif atau tidak pernah negatif).</Warn>
       )}
 
       <Card title="Grafik arus kas" sub={`Dalam ${UNIT_LABEL[du]} · kas keluar bernilai minus, capex di tahun ke-0, tanpa amortisasi (non-tunai)`}>

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { Button } from '@/components/arc/button/button';
+import { Badge as ArcBadge } from '@/components/arc/badge/badge';
+import { Alert } from '@/components/arc/alert/alert';
 import { fmt, parseNum } from './format';
 import { MAX_YEARS } from './types';
 
@@ -147,8 +149,18 @@ export function Empty(props: { children: ReactNode }) {
   return <div className="empty">{props.children}</div>;
 }
 
+const TONE = { ok: 'success', warn: 'warning', muted: 'neutral', info: 'info' } as const;
 export function Badge(props: { tone: 'ok' | 'warn' | 'muted' | 'info'; children: ReactNode }) {
-  return <span className={`badge ${props.tone}`}>{props.children}</span>;
+  return <ArcBadge tone={TONE[props.tone]} dot size="sm">{props.children}</ArcBadge>;
+}
+
+/** Peringatan model (menggantikan kotak peringatan lama). */
+export function Warn(props: { children: ReactNode }) {
+  return (
+    <div className="mb">
+      <Alert tone="warning" title="Perhatian">{props.children}</Alert>
+    </div>
+  );
 }
 
 export { fmt };
