@@ -27,7 +27,15 @@ export function loadSims(): Simulation[] {
   if (raw) {
     try {
       const arr = JSON.parse(raw) as Simulation[];
-      if (Array.isArray(arr) && arr.length) return arr;
+      if (Array.isArray(arr) && arr.length) {
+        // migrasi: contoh lama (Platform Kredit Karbon) yang tidak pernah diubah -> diganti SPORA
+        const OLD = 'Contoh – Platform Kredit Karbon';
+        const out = arr.filter((x) => !(typeof x.name === 'string' && x.name.startsWith(OLD) && x.createdAt === x.updatedAt));
+        const changed = out.length !== arr.length;
+        if (changed && out.length === 0) return [sporaSimulation()];
+        if (changed) return out;
+        return arr;
+      }
     } catch {
       /* abaikan */
     }
