@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
+import { Button } from '@/components/arc/button/button';
 import { fmt, parseNum } from './format';
 import { MAX_YEARS } from './types';
 
@@ -93,9 +94,9 @@ export function Card(props: { title?: string; sub?: string; actions?: ReactNode;
 
 export function Btn(props: { onClick?: () => void; children: ReactNode; kind?: 'primary' | 'ghost' | 'danger'; disabled?: boolean; title?: string }) {
   return (
-    <button className={`btn ${props.kind ?? ''}`} onClick={props.onClick} disabled={props.disabled} title={props.title} type="button">
+    <Button variant={props.kind ?? 'secondary'} size="sm" onClick={props.onClick} disabled={props.disabled} title={props.title} type="button">
       {props.children}
-    </button>
+    </Button>
   );
 }
 

@@ -6,6 +6,7 @@ import { download, loadRateCard, loadSims, safeName, saveRateCard, saveSims } fr
 import { exportXlsxBuffer } from './exportXlsx';
 import { fmtPct, fmtUnit, UNIT_LABEL } from './format';
 import { Badge, Btn } from './ui';
+import { Tabs, TabsList, TabsTrigger } from '@/components/arc/tabs/tabs';
 import General from './pages/General';
 import Transactions from './pages/Transactions';
 import Revenue from './pages/Revenue';
@@ -124,10 +125,12 @@ export default function App() {
       <div className="brand" onClick={() => { setCurrentId(null); setView('sims'); }}>
         <span className="logo">KF</span> Kajian Finansial
       </div>
-      <nav>
-        <button className={view === 'sims' ? 'on' : ''} onClick={() => { setView('sims'); }}>Simulasi</button>
-        <button className={view === 'rates' ? 'on' : ''} onClick={() => { setView('rates'); setCurrentId(null); }}>Master Tarif</button>
-      </nav>
+      <Tabs value={view} onValueChange={(v) => { setView(v as 'sims' | 'rates'); if (v === 'rates') setCurrentId(null); }}>
+        <TabsList aria-label="Navigasi">
+          <TabsTrigger value="sims">Simulasi</TabsTrigger>
+          <TabsTrigger value="rates">Master Tarif</TabsTrigger>
+        </TabsList>
+      </Tabs>
     </header>
   );
 
@@ -222,13 +225,13 @@ function Editor(props: { sim: Simulation; update: (fn: (s: Simulation) => void) 
           <Btn kind="primary" onClick={props.onExport} disabled={props.busy}>{props.busy ? 'Membuat…' : 'Ekspor xlsx'}</Btn>
         </div>
       </div>
-      <div className="tabs" role="tablist">
-        {TABS.map((t) => (
-          <button key={t.id} role="tab" aria-selected={tab === t.id} className={tab === t.id ? 'on' : ''} onClick={() => setTab(t.id)}>
-            <i>{t.step}</i> {t.label}
-          </button>
-        ))}
-      </div>
+      <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)}>
+        <TabsList aria-label="Langkah kajian">
+          {TABS.map((t) => (
+            <TabsTrigger key={t.id} value={t.id}>{/^\d/.test(t.step) ? `${t.step}. ` : `${t.step} `}{t.label}</TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
       {tab === 'umum' && <General sim={sim} update={update} />}
       {tab === 'transaksi' && <Transactions sim={sim} update={update} />}
       {tab === 'revenue' && <Revenue sim={sim} update={update} />}
