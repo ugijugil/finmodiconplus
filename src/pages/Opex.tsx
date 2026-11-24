@@ -11,13 +11,14 @@ const KIND_LABEL: Record<OpexKind, string> = {
   fixed: 'Biaya tetap (sewa, listrik, server, jaringan, dll.)',
   pctRevenue: '% dari revenue (overhead, pemeliharaan)',
   perUnit: 'Per satuan penjualan (biaya langsung)',
+  perDriver: 'Per transaksi / driver (biaya variabel)',
 };
 
 export default function Opex({ sim, update, rateCard }: { sim: Simulation; update: Upd; rateCard: RateCardRole[] }) {
   const res = compute(sim);
   const du = sim.general.displayUnit;
   const cats = Array.from(new Set(sim.opex.map((o) => o.category)));
-  const add = (k: OpexKind) => update((s) => s.opex.push(newOpex(k, { componentId: k === 'perUnit' ? s.components[0]?.id ?? null : null })));
+  const add = (k: OpexKind) => update((s) => s.opex.push(newOpex(k, { componentId: k === 'perUnit' ? s.components[0]?.id ?? null : null, driverId: k === 'perDriver' ? s.drivers[0]?.id ?? null : null })));
 
   const set = (i: number, p: Partial<OpexItem>) => update((s) => Object.assign(s.opex[i], p));
 
@@ -32,6 +33,7 @@ export default function Opex({ sim, update, rateCard }: { sim: Simulation; updat
             <Btn onClick={() => add('fixed')}>+ Biaya tetap</Btn>
             <Btn onClick={() => add('pctRevenue')}>+ % Revenue</Btn>
             <Btn onClick={() => add('perUnit')}>+ Per satuan</Btn>
+            <Btn onClick={() => add('perDriver')} title="Biaya = tarif × jumlah transaksi (driver) tiap tahun">+ Per transaksi</Btn>
             <Btn onClick={() => update((s) => s.opex.push(...standardOverhead(s.opex)))} title="Menambah pemeliharaan, kepegawaian, administrasi umum, dan pemasaran sebagai % revenue (nilai standar template KKF)">+ Overhead standar</Btn>
           </>
         }
@@ -152,6 +154,21 @@ export default function Opex({ sim, update, rateCard }: { sim: Simulation; updat
                   />
                 </Field>
                 <Field label="Biaya per satuan terjual (Rp)">
+                  <NumField value={it.unitCost} prefix="Rp" onChange={(v) => set(i, { unitCost: v })} />
+                </Field>
+              </>
+            )}
+
+            {it.kind === 'perDriver' && (
+              <>
+                <Field label="Driver transaksi" hint="Volume driver pada Proyeksi Transaksi (sebelum take-up). Ikut pengali volume what-if & skenario.">
+                  <Select
+                    value={it.driverId ?? ''}
+                    onChange={(v) => set(i, { driverId: v || null })}
+                    options={[{ value: '', label: '— pilih —' }, ...sim.drivers.map((d) => ({ value: d.id, label: `${d.name} (${d.unit})` }))]}
+                  />
+                </Field>
+                <Field label="Biaya per transaksi (Rp)">
                   <NumField value={it.unitCost} prefix="Rp" onChange={(v) => set(i, { unitCost: v })} />
                 </Field>
               </>

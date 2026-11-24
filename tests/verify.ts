@@ -125,6 +125,7 @@ async function check(label: string, sim: Simulation) {
   v.general.activeScenarioId = v.scenarios[1].id;
   v.opex.push(newOpex('fixed', { name: 'Biaya start thn 3', qty: 2, unitCost: 5_000_000, period: 'month', startYear: 3, endYear: 5, escMode: 'custom', esc: 0.07 }));
   v.opex.push(newOpex('perUnit', { name: 'Per unit custom', componentId: v.components[1].id, unitCost: 1000, escMode: 'custom', esc: 0.05 }));
+  v.opex.push(newOpex('perDriver', { name: 'Biaya per transaksi', driverId: v.drivers[0].id, unitCost: 25, escMode: 'custom', esc: 0.03, startYear: 2 }));
   v.capex.push(newCapex('lump', { name: 'Ekspansi thn 2', amount: 800_000_000, year: 2, lifeYears: 3 }));
   v.capex.push(newCapex('manday', { name: 'Manual rate', qty: 2, mandays: 30, rate: 1_234_567, toolPerDay: 10_000, year: 1, lifeYears: 4 }));
   v.drivers[0].mode = 'manual';

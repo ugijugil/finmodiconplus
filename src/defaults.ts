@@ -28,7 +28,7 @@ export function newComponent(driverId: string | null, p: Partial<Component> = {}
 
 export function newOpex(kind: OpexItem['kind'] = 'fixed', p: Partial<OpexItem> = {}): OpexItem {
   return {
-    id: uid('opx'), category: kind === 'manpower' ? 'Manpower' : kind === 'pctRevenue' ? 'Overhead' : kind === 'perUnit' ? 'Biaya Langsung' : 'Infrastruktur & Server',
+    id: uid('opx'), category: kind === 'manpower' ? 'Manpower' : kind === 'pctRevenue' ? 'Overhead' : kind === 'perUnit' || kind === 'perDriver' ? 'Biaya Langsung' : 'Infrastruktur & Server',
     name: 'Biaya baru', kind, qty: 1, unitCost: 0, daysPerMonth: 22, toolPerMonth: 0, marginPct: 0,
     period: 'month', pct: 0, componentId: null, escMode: 'inflation', esc: 0, startYear: 1, endYear: null, ...p,
   };

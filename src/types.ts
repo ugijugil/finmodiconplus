@@ -1,7 +1,7 @@
 export const MAX_YEARS = 10;
 
 export type EscMode = 'inflation' | 'custom' | 'none';
-export type OpexKind = 'manpower' | 'fixed' | 'pctRevenue' | 'perUnit';
+export type OpexKind = 'manpower' | 'fixed' | 'pctRevenue' | 'perUnit' | 'perDriver';
 export type CapexKind = 'manday' | 'lump';
 export type DisplayUnit = 'Rp' | 'ribu' | 'juta' | 'miliar';
 
@@ -80,6 +80,8 @@ export interface OpexItem {
   period: 'month' | 'year';
   pct: number;
   componentId: string | null;
+  /** Hanya untuk kind 'perDriver': driver transaksi yang menjadi pengali biaya. */
+  driverId?: string | null;
   escMode: EscMode;
   esc: number;
   startYear: number;

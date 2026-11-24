@@ -194,6 +194,7 @@ export function compute(sim: Simulation): Result {
       if (it.kind === 'manpower' || it.kind === 'fixed') v = base * esc;
       else if (it.kind === 'pctRevenue') v = it.pct * revenue[y];
       else if (it.kind === 'perUnit') v = it.unitCost * (it.componentId && comp[it.componentId] ? comp[it.componentId].qty[y] : 0) * esc;
+      else if (it.kind === 'perDriver') v = it.unitCost * (it.driverId && driverVolume[it.driverId] ? driverVolume[it.driverId][y] : 0) * flex.volume * (sc?.volumeMultiplier ?? 1) * esc;
       vals[y] = v * flex.opex;
       opexItems[y] += vals[y];
     }

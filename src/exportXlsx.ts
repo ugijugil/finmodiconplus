@@ -26,7 +26,7 @@ const FMT_NUM = '#,##0;[Red](#,##0);"-"';
 const FMT_DEC = '#,##0.0000';
 const FMT_PCT = '0.0%';
 
-const KIND_OPEX: Record<string, string> = { manpower: 'Manpower', fixed: 'Biaya tetap', pctRevenue: '% Revenue', perUnit: 'Per satuan' };
+const KIND_OPEX: Record<string, string> = { manpower: 'Manpower', fixed: 'Biaya tetap', pctRevenue: '% Revenue', perUnit: 'Per satuan', perDriver: 'Per transaksi (driver)' };
 const KIND_CAPEX: Record<string, string> = { manday: 'Mandays', lump: 'Lumpsum' };
 
 type WS = ExcelJS.Worksheet;
@@ -293,7 +293,7 @@ export async function buildWorkbook(sim: Simulation, rateCard: RateCardRole[]): 
     const rr = RO0 + i;
     const rc = cardRate(it.roleCode);
     const rateCell = it.kind === 'manpower' && it.roleCode && rc !== undefined && Math.abs(rc - it.unitCost) < 1e-6 ? F(rateFormula(`$E${rr}`)) : it.unitCost;
-    const compName = it.componentId ? sim.components.find((c) => c.id === it.componentId)?.name ?? '' : '';
+    const compName = it.kind === 'perDriver' ? (it.driverId ? sim.drivers.find((d) => d.id === it.driverId)?.name ?? '' : '') : it.componentId ? sim.components.find((c) => c.id === it.componentId)?.name ?? '' : '';
     setCell(wsRO, rr, 1, i + 1);
     setCell(wsRO, rr, 2, it.category, { input: true });
     setCell(wsRO, rr, 3, it.name, { input: true });
@@ -316,7 +316,7 @@ export async function buildWorkbook(sim: Simulation, rateCard: RateCardRole[]): 
     else if (it.kind === 'fixed') base = F(`F${rr}*G${rr}*IF(K${rr}="Bulan",12,1)`);
     setCell(wsRO, rr, 17, base, { fmt: FMT_NUM });
   });
-  setCell(wsRO, RO0 + sim.opex.length + 1, 2, 'Catatan: item "% Revenue" dihitung dari total revenue tahun berjalan; item "Per satuan" = biaya per satuan × volume komponen terkait. Selesai = 99 berarti sampai akhir tenor.', { color: 'FF666666' });
+  setCell(wsRO, RO0 + sim.opex.length + 1, 2, 'Catatan: item "% Revenue" dihitung dari total revenue tahun berjalan; item "Per satuan" = biaya per satuan × volume komponen terkait; item "Per transaksi" = biaya per transaksi × volume driver terkait. Selesai = 99 berarti sampai akhir tenor.', { color: 'FF666666' });
 
   // =========================================================
   // OPEX
@@ -347,6 +347,9 @@ export async function buildWorkbook(sim: Simulation, rateCard: RateCardRole[]): 
       else if (it.kind === 'perUnit') {
         const qr = it.componentId ? qtyRow[it.componentId] : undefined;
         body = qr ? `'Ref. OPEX'!$G${ro}*REVENUE!${L}$${qr}*${esc}` : '0';
+      } else if (it.kind === 'perDriver') {
+        const dr = it.driverId ? drvVolRow[it.driverId] : undefined;
+        body = dr ? `'Ref. OPEX'!$G${ro}*'Trx Projections'!${L}${dr}*${A.mVol}*${A.scVol}*${esc}` : '0';
       } else body = `'Ref. OPEX'!$Q${ro}*${esc}`;
       setCell(wsOpx, rr, YC(y), F(`IF(${act},${body}*${A.mOpex},0)`), { fmt: FMT_NUM });
     }
